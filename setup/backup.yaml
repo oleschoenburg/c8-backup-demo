@@ -1,0 +1,30 @@
+zeebe:
+  serviceAccount:
+    enabled: false
+    name: "ccs23-backup-client"
+  env:
+    - name: "ZEEBE_BROKER_DATA_BACKUP_STORE"
+      value: "gcs"
+    - name: "ZEEBE_BROKER_DATA_BACKUP_GCS_BUCKETNAME"
+      value: "ccs23-backup"
+    - name: "ZEEBE_BROKER_DATA_BACKUP_GCS_BASEPATH"
+      value: "zeebe"
+elasticsearch:
+  rbac:
+    serviceAccountName: "ccs23-backup-client"
+  extraInitContainers:
+    - name: install-gcs-plugin
+      image: docker.elastic.co/elasticsearch/elasticsearch:7.17.1
+      imagePullPolicy: IfNotPresent
+      command:
+        ["sh", "-c", "bin/elasticsearch-plugin install --batch repository-gcs"]
+      volumeMounts:
+        - name: plugins
+          mountPath: /usr/share/elasticsearch/plugins
+  extraVolumes:
+    - name: plugins
+      emptyDir: {}
+  extraVolumeMounts:
+    - name: plugins
+      mountPath: /usr/share/elasticsearch/plugins
+      readOnly: false

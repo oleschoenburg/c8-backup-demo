@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: starter
+  labels:
+    app: starter
+spec:
+  selector:
+    matchLabels:
+      app: starter
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: starter
+    spec:
+      containers:
+        - name: starter
+          image: "gcr.io/zeebe-io/starter:SNAPSHOT"
+          env:
+            - name: JDK_JAVA_OPTIONS
+              value: >-
+                -Dconfig.override_with_env_vars=true
+                -Dapp.brokerUrl=ccs23-zeebe-gateway:26500
+                -Dapp.starter.rate=1
+                -Dapp.starter.durationLimit=0
+                -XX:+HeapDumpOnOutOfMemoryError
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker
+  labels:
+    app: worker
+spec:
+  selector:
+    matchLabels:
+      app: worker
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: worker
+    spec:
+      containers:
+        - name: worker
+          image: "gcr.io/zeebe-io/worker:SNAPSHOT"
+          env:
+            - name: JDK_JAVA_OPTIONS
+              value: >-
+                -Dconfig.override_with_env_vars=true
+                -Dapp.brokerUrl=ccs23-zeebe-gateway:26500
+                -Dapp.worker.capacity=10
+                -Dapp.worker.pollingDelay=100ms
+                -XX:+HeapDumpOnOutOfMemoryError
