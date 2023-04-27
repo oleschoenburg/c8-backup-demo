@@ -12,7 +12,6 @@ gcloud iam service-accounts add-iam-policy-binding zeebe-gcs-sa@zeebe-io.iam.gse
 helm install -n os-ccs23-dev ccs23-dev camunda/camunda-platform --values config/dev.yaml --values config/restore.yaml
 kubectl -n os-ccs23-dev rollout status statefulset ccs23-dev-zeebe elasticsearch-master &
 kubectl -n os-ccs23-dev rollout status deploy ccs23-dev-operate &
-kubectl -n os-ccs23-dev rollout status statefulset ccs23-dev-zeebe & 
 wait
 
 # Setup ES Snapshot Repository
@@ -27,3 +26,4 @@ curl -X PUT "localhost:9200/_snapshot/gcs?pretty" -H 'Content-Type: application/
   }
 }
 '
+kill %1

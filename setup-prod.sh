@@ -14,9 +14,8 @@ gcloud iam service-accounts add-iam-policy-binding zeebe-gcs-sa@zeebe-io.iam.gse
 
 # Install C8
 helm install -n os-ccs23-prod ccs23-prod camunda/camunda-platform --values config/prod.yaml --values config/backup.yaml
-kubectl -n os-ccs23-prod rollout status statefulset os-ccs23-prod-zeebe elasticsearch-master &
+kubectl -n os-ccs23-prod rollout status statefulset ccs23-prod-zeebe elasticsearch-master &
 kubectl -n os-ccs23-prod rollout status deploy ccs23-prod-operate &
-kubectl -n os-ccs23-prod rollout status statefulset ccs23-prod-zeebe & 
 wait
 
 # Setup ES Snapshot Repository
