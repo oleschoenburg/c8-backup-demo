@@ -1,0 +1,19 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: zeebe-delete-data-$NODEID
+spec:
+  template:
+    spec:
+      containers:
+        - name: data-deletion
+          image: busybox:latest
+          command: ["/bin/sh", "-c", "rm -rf /usr/local/zeebe/data/*"]
+          volumeMounts:
+            - name: data
+              mountPath: "/usr/local/zeebe/data"
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: data-ccs23-dev-zeebe-$NODEID
+      restartPolicy: OnFailure
