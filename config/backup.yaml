@@ -32,5 +32,5 @@ operate:
   env:
     - name: CAMUNDA_OPERATE_BACKUP_REPOSITORYNAME
       value: "gcs"
-    - name: MANAGEMENT_ENDPOINT_WEB_EXPOSURE_INCLUDE
+    - name: MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE
       value: "*" # Explicitely enable all endpoints, otherwise the backups endpoint is disabled by the application.yaml config

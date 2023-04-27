@@ -1,13 +1,12 @@
 # C8 Backup Demo
 
 ## Getting started
-
-1. Install [just](https://just.systems/man/en/), a modern make alternative.
-2. Install [Backup CLI]
-3. Run `just deps` to install (and update) the helm charts.
-4. Run `just setup` to deploy a fresh cluster.
-5. Run `just backup` to take a backup.
-6. Run `just cleanup` to delete everything, including the backup bucket!
+1. Install [Backup CLI]
+2. Run `./deps.sh` to install (and update) the helm charts.
+3. Run `./setup.sh` to deploy a fresh cluster.
+4. Run `./upgrade.sh` to apply any changes in the `config/` manifests.
+5. Run `./backup.sh` to take a single backup.
+6. Run `./cleanup.sh` to delete everything, including the backup bucket!
 
 ## Resources
 
