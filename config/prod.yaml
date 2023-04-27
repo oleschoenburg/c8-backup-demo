@@ -1,0 +1,34 @@
+global:
+  identity:
+    auth:
+      enabled: false
+  image:
+    tag: 8.2.3
+zeebe:
+  clusterSize: 3
+  partitionCount: 3
+  replicationFactor: 3
+  pvcSize: 10Gi
+  podLabels:
+    metrics: gmp
+zeebe-gateway:
+  replicas: 1
+  podLabels:
+    metrics: gmp
+elasticsearch:
+  enabled: true
+  replicas: 1
+  volumeClaimTemplate:
+    resources:
+      requests:
+        storage: 10Gi
+identity:
+  enabled: false
+operate:
+  enabled: true
+tasklist:
+  enabled: false
+optimize:
+  enabled: false
+connectors:
+  enabled: false

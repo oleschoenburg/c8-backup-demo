@@ -21,7 +21,7 @@ spec:
             - name: JDK_JAVA_OPTIONS
               value: >-
                 -Dconfig.override_with_env_vars=true
-                -Dapp.brokerUrl=ccs23-zeebe-gateway:26500
+                -Dapp.brokerUrl=ccs23-prod-zeebe-gateway:26500
                 -Dapp.starter.rate=1
                 -Dapp.starter.durationLimit=0
                 -XX:+HeapDumpOnOutOfMemoryError
@@ -49,7 +49,7 @@ spec:
             - name: JDK_JAVA_OPTIONS
               value: >-
                 -Dconfig.override_with_env_vars=true
-                -Dapp.brokerUrl=ccs23-zeebe-gateway:26500
+                -Dapp.brokerUrl=ccs23-prod-zeebe-gateway:26500
                 -Dapp.worker.capacity=10
                 -Dapp.worker.pollingDelay=100ms
                 -XX:+HeapDumpOnOutOfMemoryError
