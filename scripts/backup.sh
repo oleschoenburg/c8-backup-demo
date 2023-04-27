@@ -1,10 +1,9 @@
 #!/bin/bash
-kubectl port-forward svc/ccs23-zeebe-gateway 9600:9600 &
-backupId=$(date +%s)
-curl --silent --request POST 'http://localhost:9600/actuator/backups' \
-    --connect-timeout 30 --retry-connrefused --retry 10 --retry-delay 5 \
-    -H 'Content-Type: application/json' \
-    -d "{ \"backupId\": \"$backupId\" }" | jq
-sleep 15
-curl --request GET "http://localhost:9600/actuator/backups/$backupId" | jq
-kill %1
+kubectl port-forward svc/elasticsearch-master 9200:9200 &
+kubectl port-forward svc/ccs23-zeebe-gateway 9601:9600 &
+kubectl port-forward deploy/ccs23-operate 9602:8080 &
+
+sleep 5
+c8backup backup --elastic localhost:9200 --elastic-repository gcs --zeebe localhost:9601 --operate localhost:9602
+
+kill %1 %2 %3

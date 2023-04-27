@@ -1,5 +1,6 @@
 #!/bin/bash
 kubectl port-forward svc/elasticsearch-master 9200:9200 &
+sleep 1
 curl -X PUT "localhost:9200/_snapshot/gcs?pretty" -H 'Content-Type: application/json' --connect-timeout 30 --retry-connrefused --retry 10 --retry-delay 5 -d'
 {
   "type": "gcs",
