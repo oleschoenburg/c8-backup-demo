@@ -1,5 +1,29 @@
 # C8 Backup Demo
 
+## Prerequisites
+Two service accounts are needed, one with read-write and one with read-only permissions.
+
+```shell
+gcloud iam service-accounts create os-gcs-rw --project zeebe-io
+gcloud iam service-accounts create os-gcs-ro --project zeebe-io
+
+gcloud projects add-iam-policy-binding zeebe-io \
+    --member "serviceAccount:os-gcs-rw@zeebe-io.iam.gserviceaccount.com" \
+    --role "roles/storage.objectAdmin"
+
+gcloud projects add-iam-policy-binding zeebe-io \
+    --member "serviceAccount:os-gcs-ro@zeebe-io.iam.gserviceaccount.com" \
+    --role "roles/storage.objectViewer"
+
+gcloud iam service-accounts add-iam-policy-binding os-gcs-ro@zeebe-io.iam.gserviceaccount.com \
+    --role roles/iam.workloadIdentityUser \
+    --member "serviceAccount:zeebe-io.svc.id.goog[os-ccs23-dev/ccs23-restore-client]"
+
+gcloud iam service-accounts add-iam-policy-binding os-gcs-rw@zeebe-io.iam.gserviceaccount.com \
+    --role roles/iam.workloadIdentityUser \
+    --member "serviceAccount:zeebe-io.svc.id.goog[os-ccs23-prod/ccs23-backup-client]"
+```
+
 ## Getting started
 1. Install [Backup CLI]
 2. Run `./deps.sh` to install (and update) the helm charts.
