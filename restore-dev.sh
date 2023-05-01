@@ -1,18 +1,19 @@
 #!/bin/bash
-
-# Connect to dev
-kubectl -n os-ccs23-dev port-forward svc/elasticsearch-master 9200:9200 &
-kubectl -n os-ccs23-dev port-forward svc/ccs23-dev-zeebe-gateway 9601:9600 &
-kubectl -n os-ccs23-dev port-forward deploy/ccs23-dev-operate 9602:8080 &
-
-sleep 3
+set -xeo pipefail
 
 # Lookup information about the latest backup
+kubectl -n os-ccs23-prod port-forward svc/ccs23-prod-zeebe-gateway 9601:9600 &
+kubectl -n os-ccs23-prod port-forward svc/elasticsearch-master 9200:9200 &
+sleep 1
+
 backupId=$(curl -s localhost:9601/actuator/backups | jq 'map(select(.state == "COMPLETED")) | map(.backupId)  | sort | last')
-zeebeIndices=$(curl -s localhost:9200/_cat/indices | grep zeebe | awk '{print $3}')
 zeebeSnapshot=camunda_zeebe_records-"$backupId"
-operateIndices=$(curl -s localhost:9200/_cat/indices | grep operate | awk '{print $3}')
-operateSnapshots=$(curl -s localhost:9602/actuator/backups/"$backupId" | jq -r .details[].snapshotName)
+operateSnapshots=$(curl -s localhost:9200/_snapshot/gcs/camunda_operate_"$backupId"_\* | jq -r .snapshots[].snapshot)
+kill %1 %2
+if [ -z "$backupId" ]; then
+  echo "No completed backups found"
+  exit 1
+fi
 
 # Shut down Zeebe
 kubectl -n os-ccs23-dev scale statefulset ccs23-dev-zeebe --replicas=0
@@ -21,9 +22,13 @@ kubectl -n os-ccs23-dev scale deploy ccs23-dev-zeebe-gateway --replicas=0
 ## Shut down Operate
 kubectl -n os-ccs23-dev scale deploy ccs23-dev-operate --replicas=0
 kubectl -n os-ccs23-dev rollout status deploy ccs23-dev-operate
+sleep 10
 
+kubectl -n os-ccs23-dev port-forward svc/elasticsearch-master 9200:9200 &
+
+sleep 3
 # Delete Operate indices from ES
-for index in $operateIndices
+for index in $(curl -s localhost:9200/operate\* | jq -r keys[])
 do
   echo "Deleting index $index"
   curl -s -X DELETE "localhost:9200/$index"
@@ -37,7 +42,7 @@ do
 done
 
 # Delete Zeebe indices from ES
-for index in $zeebeIndices
+for index in $(curl -s localhost:9200/zeebe\* | jq -r keys[])
 do
   echo "Deleting index $index"
   curl -s -X DELETE "localhost:9200/$index"
@@ -69,4 +74,4 @@ kubectl -n os-ccs23-dev scale statefulset ccs23-dev-zeebe --replicas=3
 kubectl -n os-ccs23-dev scale deploy ccs23-dev-operate --replicas=1
 kubectl -n os-ccs23-dev scale deploy ccs23-dev-zeebe-gateway --replicas=1
 
-kill %1 %2 %3
+kill %1
