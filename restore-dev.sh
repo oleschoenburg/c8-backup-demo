@@ -70,6 +70,15 @@ NODEID=0 BACKUPID=$backupId envsubst < config/restore-job.yaml | kubectl wait --
 NODEID=1 BACKUPID=$backupId envsubst < config/restore-job.yaml | kubectl wait --for=condition=complete -f -
 NODEID=2 BACKUPID=$backupId envsubst < config/restore-job.yaml | kubectl wait --for=condition=complete -f -
 
+# Delete jobs
+NODEID=0 BACKUPID=$backupId envsubst < config/data-deletion-job.yaml | kubectl delete -f - 
+NODEID=1 BACKUPID=$backupId envsubst < config/data-deletion-job.yaml | kubectl delete -f - 
+NODEID=2 BACKUPID=$backupId envsubst < config/data-deletion-job.yaml | kubectl delete -f - 
+
+NODEID=0 BACKUPID=$backupId envsubst < config/restore-job.yaml | kubectl delete -f - 
+NODEID=1 BACKUPID=$backupId envsubst < config/restore-job.yaml | kubectl delete -f - 
+NODEID=2 BACKUPID=$backupId envsubst < config/restore-job.yaml | kubectl delete -f - 
+
 kubectl -n os-ccs23-dev scale statefulset ccs23-dev-zeebe --replicas=3
 kubectl -n os-ccs23-dev scale deploy ccs23-dev-operate --replicas=1
 kubectl -n os-ccs23-dev scale deploy ccs23-dev-zeebe-gateway --replicas=1
