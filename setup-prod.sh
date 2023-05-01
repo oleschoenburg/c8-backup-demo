@@ -2,11 +2,11 @@
 kubectl create ns os-ccs23-prod
 
 # Create bucket if it does not already exist
-gcloud storage buckets create --project zeebe-io gs://ccs23-backup
+gcloud storage buckets create --project zeebe-io --location europe-west1 gs://ccs23-backup
 
 # Setup service accounts and workload identity
 kubectl -n os-ccs23-prod create serviceaccount ccs23-backup-client
-kubectl -n os-ccs23-prod annotate serviceaccount ccs23-backup-client iam.gke.io/gcp-service-account=zeebe-gcs-sa@zeebe-io.iam.gserviceaccount.com
+kubectl -n os-ccs23-prod annotate serviceaccount ccs23-backup-client iam.gke.io/gcp-service-account=os-gcs-rw@zeebe-io.iam.gserviceaccount.com
 
 gcloud iam service-accounts add-iam-policy-binding zeebe-gcs-sa@zeebe-io.iam.gserviceaccount.com \
     --role roles/iam.workloadIdentityUser \

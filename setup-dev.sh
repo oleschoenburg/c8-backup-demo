@@ -3,7 +3,7 @@
 kubectl create ns os-ccs23-dev
 
 kubectl -n os-ccs23-dev create serviceaccount ccs23-restore-client
-kubectl -n os-ccs23-dev annotate serviceaccount ccs23-restore-client iam.gke.io/gcp-service-account=zeebe-gcs-sa@zeebe-io.iam.gserviceaccount.com
+kubectl -n os-ccs23-dev annotate serviceaccount ccs23-restore-client iam.gke.io/gcp-service-account=os-gcs-ro@zeebe-io.iam.gserviceaccount.com
 
 gcloud iam service-accounts add-iam-policy-binding zeebe-gcs-sa@zeebe-io.iam.gserviceaccount.com \
     --role roles/iam.workloadIdentityUser \
@@ -22,7 +22,8 @@ curl -X PUT "localhost:9200/_snapshot/gcs?pretty" -H 'Content-Type: application/
   "type": "gcs",
   "settings": {
     "bucket": "ccs23-backup",
-    "base_path": "elasticsearch"
+    "base_path": "elasticsearch",
+    "readonly": true
   }
 }
 '
