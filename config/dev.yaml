@@ -22,6 +22,12 @@ elasticsearch:
     resources:
       requests:
         storage: 10Gi
+retentionPolicy:
+  enabled: true
+  schedule: "*/15 * * * *"
+  zeebeIndexTTL: 1
+  zeebeIndexMaxSize: 1
+  operateIndexTTL: 2
 identity:
   enabled: false
 operate:
