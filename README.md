@@ -41,4 +41,4 @@ gcloud iam service-accounts add-iam-policy-binding os-gcs-rw@zeebe-io.iam.gservi
 - [Backup & Restore Documentation](https://docs.camunda.io/docs/self-managed/backup-restore/backup-and-restore/)
 - [Backup CLI]
 
-[Backup CLI]: https://github.com/Sijoma/camunda-backup-cli
+[Backup CLI]: https://github.com/oleschoenburg/c8-backup
